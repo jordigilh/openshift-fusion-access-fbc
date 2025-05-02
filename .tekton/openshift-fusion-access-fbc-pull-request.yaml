@@ -2,22 +2,21 @@ apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
   annotations:
-    build.appstudio.openshift.io/repo: https://github.com/openshift-storage-scale/openshift-fusion-access-fbc?rev={{revision}}
+    build.appstudio.openshift.io/repo: https://github.com/jordigilh/openshift-fusion-access-fbc?rev={{revision}}
     build.appstudio.redhat.com/commit_sha: '{{revision}}'
     build.appstudio.redhat.com/pull_request_number: '{{pull_request_number}}'
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/cancel-in-progress: "true"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
-      == "main" && ( "v4.18/***".pathChanged() || ".tekton/fbc-v4-18-pull-request.yaml".pathChanged()
-      || "catalog.Dockerfile".pathChanged() )
+      == "main"
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: fbc-v4-18
-    appstudio.openshift.io/component: fbc-v4-18
+    appstudio.openshift.io/application: openshift-fusion-access-fbc
+    appstudio.openshift.io/component: openshift-fusion-access-fbc
     pipelines.appstudio.openshift.io/type: build
-  name: fbc-v4-18-on-pull-request
-  namespace: storage-scale-releng-tenant
+  name: openshift-fusion-access-fbc-on-pull-request
+  namespace: jgil-tenant
 spec:
   params:
   - name: git-url
@@ -25,16 +24,14 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/storage-scale-releng-tenant/fbc-v4-18:on-pr-{{revision}}
+    value: quay.io/redhat-user-workloads/jgil-tenant/openshift-fusion-access-fbc:on-pr-{{revision}}
   - name: image-expires-after
     value: 5d
   - name: build-platforms
     value:
     - linux/x86_64
   - name: dockerfile
-    value: catalog.Dockerfile
-  - name: path-context
-    value: v4.18
+    value: v4.18/catalog.Dockerfile
   pipelineSpec:
     description: |
       This pipeline is ideal for building and verifying [file-based catalogs](https://konflux-ci.dev/docs/end-to-end/building-olm/#building-the-file-based-catalog).
